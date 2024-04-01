@@ -3,7 +3,7 @@ import sqlalchemy.orm as orm
 import sqlalchemy as sqa
 
 from datetime import date
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID, generics
+# from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID, generics
 
 
 class Base(orm.DeclarativeBase):
@@ -16,15 +16,16 @@ class Base(orm.DeclarativeBase):
 #     user: str = "user"
 
 
-class User(SQLAlchemyBaseUserTableUUID, Base):
+# class User(SQLAlchemyBaseUserTableUUID, Base):
+class User(Base):
     __tablename__ = 'users'
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sqa.String(50), index=True)
-    email: orm.Mapped[str] = orm.mapped_column(sqa.String(320), unique=True, nullable=False)
-    password: orm.Mapped[str] = orm.mapped_column(sqa.String(255), nullable=False)
-    avatar: orm.Mapped[str] = orm.mapped_column(sqa.String(255), nullable=True)
-    refresh_token: orm.Mapped[str] = orm.mapped_column(sqa.String(255))
+    email: orm.Mapped[str] = orm.mapped_column(sqa.String(250), unique=True, nullable=False)
+    password: orm.Mapped[str] = orm.mapped_column(sqa.String(250), nullable=False)
+    avatar: orm.Mapped[str] = orm.mapped_column(sqa.String(250), nullable=True)
+    refresh_token: orm.Mapped[str] = orm.mapped_column(sqa.String(250), nullable=True)
     created_at: orm.Mapped[date] = orm.mapped_column('created_at', sqa.DateTime, default=sqa.func.now())
     updated_at: orm.Mapped[date] = orm.mapped_column('updated_at', sqa.DateTime, default=sqa.func.now(),
                                                      onupdate=sqa.func.now())
