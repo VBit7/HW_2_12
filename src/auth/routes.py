@@ -20,16 +20,6 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 get_refresh_token = HTTPBearer()
 
 
-# @router.post("/signup", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-# async def signup(body: schemas.UserSchema, db: AsyncSession = Depends(database.get_db)):
-#     exist_user = await repo.get_user_by_email(body.email, db)
-#     if exist_user:
-#         raise HTTPException(
-#             status_code=status.HTTP_409_CONFLICT, detail="Account already exists"
-#         )
-#     body.password = services.auth_service.get_password_hash(body.password)
-#     new_user = await repo.create_user(body, db)
-#     return new_user
 @router.post("/signup", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 async def signup(body: schemas.UserSchema, db: AsyncSession = Depends(database.get_db)):
     if not body.password:
@@ -93,3 +83,14 @@ async def refresh_token(
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
+
+
+@router.post("/logout")
+async def logout(
+    user = Depends(services.auth_service.get_current_user),
+    db = Depends(database.get_db)
+) -> schemas.LogoutResponse:
+    user.refresh_token = None
+    db.commit()
+
+    return {"result": "Success"}
