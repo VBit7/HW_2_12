@@ -1,7 +1,9 @@
 import pydantic
 
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
+
+import auth.schemas as auth_schemas     # noqa
 
 
 class ContactSchema(pydantic.BaseModel):
@@ -21,8 +23,10 @@ class ContactResponse(pydantic.BaseModel):
     phone_number: str
     date_of_birth: date
     additional_data: str
+    created_at: datetime | None
+    updated_at: datetime | None
+    user: auth_schemas.UserResponse | None
 
-    # completed: bool
 
     class Config:
         from_attributes = True

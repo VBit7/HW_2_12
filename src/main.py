@@ -7,7 +7,6 @@ from sqlalchemy import text
 
 import contacts.routes
 import contacts.exceptions
-# import users.routes
 import auth.routes
 import database
 
@@ -24,8 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# app.include_router(users.routes.router)
-app.include_router(auth.routes.router, prefix='/api')
+app.include_router(auth.routes.router)
 app.include_router(contacts.routes.router, prefix='/api')
 
 

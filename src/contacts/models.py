@@ -3,20 +3,12 @@ import sqlalchemy.orm as orm
 import sqlalchemy as sqa
 
 from datetime import date
-# from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID, generics
 
 
 class Base(orm.DeclarativeBase):
     pass
 
 
-# class Role(enum.Enum):
-#     admin: str = "admin"
-#     moderator: str = "moderator"
-#     user: str = "user"
-
-
-# class User(SQLAlchemyBaseUserTableUUID, Base):
 class User(Base):
     __tablename__ = 'users'
 
@@ -29,7 +21,6 @@ class User(Base):
     created_at: orm.Mapped[date] = orm.mapped_column('created_at', sqa.DateTime, default=sqa.func.now())
     updated_at: orm.Mapped[date] = orm.mapped_column('updated_at', sqa.DateTime, default=sqa.func.now(),
                                                      onupdate=sqa.func.now())
-    # role: orm.Mapped[sqa.Enum] = orm.mapped_column('role', sqa.Enum(Role), default=Role.user, nullable=True)
 
 
 class Contact(Base):

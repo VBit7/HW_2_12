@@ -1,19 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Path, Query, Security
-from fastapi.security import (
-    OAuth2PasswordRequestForm,
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-)
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm, HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# from ..database import get_db
-import database
-# from auth.repository import users as repositories_users
-import auth.repository as repo
-# from src.schemas.user import UserSchema, TokenSchema, UserResponse
-import auth.schemas as schemas
-# from src.services.auth import auth_service
-import auth.services as services
+import database                         # noqa
+import auth.repository as repo          # noqa
+import auth.schemas as schemas          # noqa
+import auth.services as services        # noqa
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -35,6 +27,7 @@ async def signup(body: schemas.UserSchema, db: AsyncSession = Depends(database.g
     new_user = await repo.create_user(body, db)
     return new_user
 
+
 @router.post("/login", response_model=schemas.TokenSchema)
 async def login(
     body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(database.get_db)
@@ -48,7 +41,6 @@ async def login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
         )
-    # Generate JWT
     access_token = await services.auth_service.create_access_token(
         data={"sub": user.email, "test": "Any_thing"}
     )
@@ -74,7 +66,6 @@ async def refresh_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
-
     access_token = await services.auth_service.create_access_token(data={"sub": email})
     refresh_token = await services.auth_service.create_refresh_token(data={"sub": email})
     await repo.update_token(user, refresh_token, db)
@@ -83,14 +74,3 @@ async def refresh_token(
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
-
-
-@router.post("/logout")
-async def logout(
-    user = Depends(services.auth_service.get_current_user),
-    db = Depends(database.get_db)
-) -> schemas.LogoutResponse:
-    user.refresh_token = None
-    db.commit()
-
-    return {"result": "Success"}

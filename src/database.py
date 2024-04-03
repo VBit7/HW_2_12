@@ -5,9 +5,9 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from contacts.models import User        #noqa
+from contacts.models import User  # noqa
 
-import database     # noqa
+import database  # noqa
 
 
 class Config:
@@ -40,11 +40,6 @@ class DatabaseSessionManager:
 
 sessionmanager = DatabaseSessionManager(config.DB_URL)
 
-
-# async def get_db():
-#     async with sessionmanager.session() as session:
-#         # yield session
-#         return session
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with sessionmanager.session() as session:
